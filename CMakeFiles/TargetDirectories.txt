@@ -1,0 +1,3 @@
+/home/rasmus/CLionProjects/gameServer/CMakeFiles/rebuild_cache.dir
+/home/rasmus/CLionProjects/gameServer/CMakeFiles/edit_cache.dir
+/home/rasmus/CLionProjects/gameServer/CMakeFiles/gameServer.dir
