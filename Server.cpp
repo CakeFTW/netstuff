@@ -27,7 +27,7 @@ Server::Server(int maxNrOfPlayers) {
     serverHints.ai_family = AF_UNSPEC;
     serverHints.ai_socktype = SOCK_STREAM;
     //serverHints.ai_flags = AI_PASSIVE;
-    serverHints.ai_addr = (sockaddr *) "127.0.0.1";
+    serverHints.ai_addr = (sockaddr *) "172.20.10.6";
 
     if (getaddrinfo(NULL, port, &serverHints, &serverInfo) != 0) {
         cout << "could not get addres" << endl;

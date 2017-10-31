@@ -12,11 +12,15 @@ Client::Client() {
 
 
     memset(&socketHints, 0, sizeof(socketHints)); // get hints about the server
+    string test;
+    cout <<  "type addr to cennect to " << endl;
+    cin >> test;
+    cout << "i got the addr " << test.c_str() << endl;
 
     socketHints.ai_family = AF_UNSPEC;
     socketHints.ai_socktype = SOCK_STREAM;
     //socketHints.ai_flags = AI_PASSIVE;
-    socketHints.ai_addr = (sockaddr *) "172.30.254.255";
+    socketHints.ai_addr = (sockaddr *) test.c_str();
 
 
     if (getaddrinfo(NULL, port, &socketHints, &ClientInfo) != 0) {
