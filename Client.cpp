@@ -7,7 +7,7 @@
 Client::Client() {
     cout << "setting up client" << endl;
 
-    char ip[] = "172.30.254.255"; // Server IP
+    char ip[] = "192.168.43.219"; // Server IP
     struct sockaddr_in server_addr;
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -62,7 +62,7 @@ void Client::listen() {
     while (started){
         dataReceived = recv(sock, res , 1024 , 0);
         if(dataReceived != 0){
-            //cout << " received data " << res << endl;
+            cout << " received data " << res << endl;
         }
 
         //listen logic goes here
