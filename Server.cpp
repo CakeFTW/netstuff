@@ -26,8 +26,9 @@ Server::Server(int maxNrOfPlayers) {
 
     serverHints.ai_family = AF_UNSPEC;
     serverHints.ai_socktype = SOCK_STREAM;
-    //serverHints.ai_flags = AI_PASSIVE;
-    serverHints.ai_addr = (sockaddr *) "172.20.10.6";
+    serverHints.ai_flags = AI_PASSIVE;
+
+
 
     if (getaddrinfo(NULL, port, &serverHints, &serverInfo) != 0) {
         cout << "could not get addres" << endl;
@@ -46,50 +47,23 @@ Server::Server(int maxNrOfPlayers) {
         }
         cout << "and it did bind " << endl;
 
-        void *addr;
-        char *ipver;
-        char ipstr[INET6_ADDRSTRLEN];
-        if (p->ai_family == AF_INET) { // IPv4
-            struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
-            addr = &(ipv4->sin_addr);
-            ipver = "IPv4";
-        } else { // IPv6
-            struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
-            addr = &(ipv6->sin6_addr);
-            ipver = "IPv6";
+        if(p->ai_family = AF_INET){
+            cout << "using ip v 4 " << endl;
+        }else if( p->ai_family == AF_INET6){
+            cout << "using ip v6 " << endl;
+        }else{
+            cout << " dont know what it is using " << endl;
         }
 
-        struct ifaddrs * ifAddrStruct=NULL;
-        struct ifaddrs * ifa=NULL;
-        void * tmpAddrPtr=NULL;
-
-        getifaddrs(&ifAddrStruct);
-
-        for (ifa = ifAddrStruct; ifa != NULL; ifa = ifa->ifa_next) {
-            if (!ifa->ifa_addr) {
-                continue;
-            }
-            if (ifa->ifa_addr->sa_family == AF_INET) { // check it is IP4
-                // is a valid IP4 Address
-                tmpAddrPtr=&((struct sockaddr_in *)ifa->ifa_addr)->sin_addr;
-                char addressBuffer[INET_ADDRSTRLEN];
-                inet_ntop(AF_INET, tmpAddrPtr, addressBuffer, INET_ADDRSTRLEN);
-                printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-            } else if (ifa->ifa_addr->sa_family == AF_INET6) { // check it is IP6
-                // is a valid IP6 Address
-                tmpAddrPtr=&((struct sockaddr_in6 *)ifa->ifa_addr)->sin6_addr;
-                char addressBuffer[INET6_ADDRSTRLEN];
-                inet_ntop(AF_INET6, tmpAddrPtr, addressBuffer, INET6_ADDRSTRLEN);
-                printf("%s IP Address %s\n", ifa->ifa_name, addressBuffer);
-            }
+        if(p->ai_family == AF_INET) {
+            char str[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &p->ai_addr, str, INET_ADDRSTRLEN);
+            cout <<"IP v4 : " <<str << endl;
+        }else {
+            char str2[INET6_ADDRSTRLEN];
+            inet_ntop(AF_INET6, &p->ai_addr, str2, INET6_ADDRSTRLEN);
+            cout <<"IP v6 :" <<str2 << endl;
         }
-        if (ifAddrStruct!=NULL) freeifaddrs(ifAddrStruct);
-
-
-        // convert the IP to a string and print it:
-        inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
-        printf("  %s: %s\n", ipver, ipstr);
-
 
         break;
     }

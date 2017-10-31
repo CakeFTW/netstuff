@@ -10,11 +10,13 @@ Client::Client() {
     struct addrinfo socketHints;
     struct addrinfo * ClientInfo;
 
+    char * point = "172.0.0.1";;
 
     memset(&socketHints, 0, sizeof(socketHints)); // get hints about the server
     string test;
     cout <<  "type addr to cennect to " << endl;
     cin >> test;
+
     cout << "i got the addr " << test.c_str() << endl;
 
     socketHints.ai_family = AF_UNSPEC;
@@ -41,22 +43,24 @@ Client::Client() {
         cout << "connection established " << endl;
 
 
-        void *addr;
-        char *ipver;
-        char ipstr[INET6_ADDRSTRLEN];
-        if (p->ai_family == AF_INET) { // IPv4
-            struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
-            addr = &(ipv4->sin_addr);
-            ipver = "IPv4";
-        } else { // IPv6
-            struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
-            addr = &(ipv6->sin6_addr);
-            ipver = "IPv6";
+        if(p->ai_family = AF_INET){
+            cout << "using ip v 4 " << endl;
+        }else if( p->ai_family == AF_INET6){
+            cout << "using ip v6 " << endl;
+        }else{
+            cout << " dont know what it is using " << endl;
         }
 
-        // convert the IP to a string and print it:
-        inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
-        printf("  %s: %s\n", ipver, ipstr);
+        if(p->ai_family == AF_INET) {
+            char str[INET_ADDRSTRLEN];
+            inet_ntop(AF_INET, &p->ai_addr, str, INET_ADDRSTRLEN);
+            cout <<"IP v4 : " <<str << endl;
+        }else {
+            char str2[INET6_ADDRSTRLEN];
+            inet_ntop(AF_INET6, &p->ai_addr, str2, INET6_ADDRSTRLEN);
+            cout <<"IP v6 :" <<str2 << endl;
+        }
+
 
         break;
     }
