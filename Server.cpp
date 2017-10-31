@@ -15,65 +15,40 @@ Server::Server(int maxNrOfPlayers) {
         clients[i].client = -1;
     }
 
+    //setting up server
 
-    //for setting up server
-    struct addrinfo serverHints;
-    struct addrinfo *serverInfo;
-    struct addrinfo *p;
+    struct sockaddr_in server_addr;
+    socklen_t size;
 
+    serverSock = socket(AF_INET, SOCK_STREAM,0);
 
-    memset(&serverHints, 0, sizeof(serverHints)); // get hints about the server
-
-    serverHints.ai_family = AF_UNSPEC;
-    serverHints.ai_socktype = SOCK_STREAM;
-    serverHints.ai_flags = AI_PASSIVE;
-
-
-
-    if (getaddrinfo(NULL, port, &serverHints, &serverInfo) != 0) {
-        cout << "could not get addres" << endl;
+    if (serverSock < 0) {
+        cout << "Error establishing socket ..." << endl;
+        exit(-1);
     }
 
-    for (p = serverInfo; p != NULL; p = p->ai_next) {
-        if (serverSock = socket(p->ai_family, p->ai_socktype, p->ai_protocol) == -1) {
-            cout << "one addr failed ";
-            continue;
-        }
-        cout << "One addr worked : ";
-        if (bind(serverSock, p->ai_addr, p->ai_addrlen) == -1) {
-            close(serverSock);
-            cout << "but did not bind " << endl;
-            continue;
-        }
-        cout << "and it did bind " << endl;
+    cout << "- Socket server has been created..." << endl;
 
-        if(p->ai_family = AF_INET){
-            cout << "using ip v 4 " << endl;
-        }else if( p->ai_family == AF_INET6){
-            cout << "using ip v6 " << endl;
-        }else{
-            cout << " dont know what it is using " << endl;
-        }
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = htons(INADDR_ANY);
+    server_addr.sin_port = htons(port);
 
-        if(p->ai_family == AF_INET) {
-            char str[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &p->ai_addr, str, INET_ADDRSTRLEN);
-            cout <<"IP v4 : " <<str << endl;
-        }else {
-            char str2[INET6_ADDRSTRLEN];
-            inet_ntop(AF_INET6, &p->ai_addr, str2, INET6_ADDRSTRLEN);
-            cout <<"IP v6 :" <<str2 << endl;
-        }
 
-        break;
+    if ((bind(serverSock, (struct sockaddr*) &server_addr, sizeof(server_addr)))
+        < 0) {
+        cout
+                << "- Error binding connection, the socket has already been established..."
+                << endl;
+        exit(-1);
     }
 
-    freeaddrinfo(serverInfo); // all done with this structure
+
+    size = sizeof(server_addr);
+    cout << "- Looking for clients..." << endl;
+
+    listen(serverSock, 1);
 
 
-    if (listen(serverSock, 10) == -1) {
-        cout << "listen() fucked up somehow " << endl;
-    }
 }
 
 void Server::Listner(ClientSock aClient) {

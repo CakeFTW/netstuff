@@ -6,65 +6,33 @@
 
 Client::Client() {
     cout << "setting up client" << endl;
-    struct addrinfo *p;
-    struct addrinfo socketHints;
-    struct addrinfo * ClientInfo;
 
-    char * point = "172.0.0.1";;
+    char ip[] = "172.30.254.255"; // Server IP
+    struct sockaddr_in server_addr;
 
-    memset(&socketHints, 0, sizeof(socketHints)); // get hints about the server
-    string test;
-    cout <<  "type addr to cennect to " << endl;
-    cin >> test;
+    sock = socket(AF_INET, SOCK_STREAM, 0);
 
-    cout << "i got the addr " << test.c_str() << endl;
-
-    socketHints.ai_family = AF_UNSPEC;
-    socketHints.ai_socktype = SOCK_STREAM;
-    //socketHints.ai_flags = AI_PASSIVE;
-    socketHints.ai_addr = (sockaddr *) test.c_str();
-
-
-    if (getaddrinfo(NULL, port, &socketHints, &ClientInfo) != 0) {
-        cout << "could not get addres" << endl;
+    if (sock < 0) {
+        cout << "\n-Error establishing socket..." << endl;
+        exit(-1);
     }
 
-    for (p = ClientInfo; p != NULL; p = p->ai_next) {
-        if (sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol) == -1) {
-            cout << "one addr failed ";
-            continue;
-        }
-        cout << "One addr worked trying to connect: ";
-        if (connect(sock , p->ai_addr, p->ai_addrlen) == -1) {
-            close(sock);
-            cout << "but could not connect " << endl;
-            continue;
-        }
-        cout << "connection established " << endl;
+
+    cout << "\n- Socket client has been created..." << endl;
+
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(port);
+
+    inet_pton(AF_INET, ip, &server_addr.sin_addr);
 
 
-        if(p->ai_family = AF_INET){
-            cout << "using ip v 4 " << endl;
-        }else if( p->ai_family == AF_INET6){
-            cout << "using ip v6 " << endl;
-        }else{
-            cout << " dont know what it is using " << endl;
-        }
-
-        if(p->ai_family == AF_INET) {
-            char str[INET_ADDRSTRLEN];
-            inet_ntop(AF_INET, &p->ai_addr, str, INET_ADDRSTRLEN);
-            cout <<"IP v4 : " <<str << endl;
-        }else {
-            char str2[INET6_ADDRSTRLEN];
-            inet_ntop(AF_INET6, &p->ai_addr, str2, INET6_ADDRSTRLEN);
-            cout <<"IP v6 :" <<str2 << endl;
-        }
-
-
-        break;
+    if (connect(sock, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0){
+        cout << "- Connection to the server port number: " << port << endl;
     }
-    freeaddrinfo(ClientInfo); // all done with this structure
+
+
+
+
     started = true;
 }
 

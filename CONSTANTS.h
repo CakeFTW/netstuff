@@ -4,7 +4,8 @@
 
 #ifndef GAMESERVER_CONSTANTS_H
 #define GAMESERVER_CONSTANTS_H
-#define port "29041"
+
+#define port 50000
 
 
 #endif //GAMESERVER_CONSTANTS_H
